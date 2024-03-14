@@ -1,3 +1,4 @@
+#import <rootless.h>
 #import "MSHFAppPrefsListController.h"
 
 @implementation MSHFAppPrefsListController
@@ -74,19 +75,32 @@
 	[super viewDidAppear:animated];
     self.table.separatorColor = [UIColor colorWithWhite:0 alpha:0];
 
-    UIWindow *keyWindow = [[[UIApplication sharedApplication] windows] firstObject];
+    UIWindow *keyWindow = nil;
+
+    if (@available(iOS 13.0, *)) {
+        for (UIWindowScene* windowScene in [UIApplication sharedApplication].connectedScenes) {
+            if (windowScene.activationState == UISceneActivationStateForegroundActive) {
+                keyWindow = windowScene.windows.firstObject;
+                break;
+            }
+        }
+    } else {
+        keyWindow = [[[[UIApplication sharedApplication] delegate] window] rootViewController].view.window;
+    }
+
+
 
     if ([keyWindow respondsToSelector:@selector(setTintColor:)]) {
         keyWindow.tintColor = [UIColor colorWithRed:238.0f / 255.0f
                                                 green:100.0f / 255.0f
                                                 blue:92.0f / 255.0f
-                                                alpha:1]; 
+                                                alpha:1];
 	}
 
     [UISwitch appearanceWhenContainedInInstancesOfClasses:@[self.class]].onTintColor = [UIColor colorWithRed:238.0f / 255.0f
                                             green:100.0f / 255.0f
                                             blue:92.0f / 255.0f
-                                            alpha:1]; 
+                                            alpha:1];
 
 
 	if ([self respondsToSelector:@selector(setEdgesForExtendedLayout:)]) {

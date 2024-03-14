@@ -1,0 +1,3 @@
+[submodule "libmitsuhaforever"]
+	path = libmitsuhaforever
+	url = https://github.com/ivanhrabcak/libmitsuhaforever

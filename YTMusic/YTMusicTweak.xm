@@ -1,13 +1,13 @@
 #import "Tweak.h"
-#define CFWBackgroundViewTagNumber 896541
+#define CFWBackgroundViewTagNumber 796541
 
-bool MSHFColorFlowSpotifyEnabled = NO;
+bool MSHFColorFlowYTMUsicEnabled = NO;
 
 %group MitsuhaVisuals
 
 MSHFConfig *config = NULL;
 
-%hook SPTNowPlayingCoverArtImageView
+%hook YTImageView
 
 -(void)setImage:(UIImage*)image {
     %orig;
@@ -16,22 +16,7 @@ MSHFConfig *config = NULL;
 
 %end
 
-%hook SPTVideoDisplayView
-- (void)refreshVideoRect {
-    %orig;
-
-    AVPlayer *displayView = [self player];
-    AVAsset *asset = displayView.currentItem.asset;
-
-    AVAssetImageGenerator* generator = [AVAssetImageGenerator assetImageGeneratorWithAsset:asset];
-    generator.appliesPreferredTrackTransform = YES;
-    UIImage* image = [UIImage imageWithCGImage:[generator copyCGImageAtTime:CMTimeMake(0, 1) actualTime:nil error:nil]];
-    if (image) [config colorizeView:image];
-}
-
-%end
-
-%hook SPTNowPlayingViewController
+%hook YTMusicNowPlayingViewController
 
 %property (retain,nonatomic) MSHFView *mshfview;
 
@@ -73,8 +58,8 @@ MSHFConfig *config = NULL;
         [config colorizeView:nil];
     }
     //  Copied from NowPlayingImpl
-    else if(MSHFColorFlowSpotifyEnabled){
-        CFWSpotifyStateManager *stateManager = [%c(CFWSpotifyStateManager) sharedManager];
+    else if(MSHFColorFlowYTMUsicEnabled){
+        CFWYTMUsicStateManager *stateManager = [%c(CFWYTMUsicStateManager) sharedManager];
         UIColor *backgroundColor = [stateManager.mainColorInfo.backgroundColor colorWithAlphaComponent:0.5];
         [[config view] updateWaveColor:backgroundColor subwaveColor:backgroundColor];
     }
@@ -93,12 +78,8 @@ MSHFConfig *config = NULL;
 %end
 
 %ctor{
-    config = [MSHFConfig loadConfigForApplication:@"Spotify"];
-    if(config.enabled){
-        config.waveOffsetOffset = 662;
-        if ([%c(CFWPrefsManager) class] && MSHookIvar<BOOL>([%c(CFWPrefsManager) sharedInstance], "_spotifyEnabled") && !config.ignoreColorFlow) {
-            MSHFColorFlowSpotifyEnabled = YES;
-        }
-        %init(MitsuhaVisuals);
-    }
+    config = [MSHFConfig loadConfigForApplication:@"YTMusic"];
+    config.waveOffsetOffset = 0;
+    MSHFColorFlowYTMUsicEnabled = YES;
+    %init(MitsuhaVisuals);
 }

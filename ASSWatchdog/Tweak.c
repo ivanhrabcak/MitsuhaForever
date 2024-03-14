@@ -2,7 +2,7 @@
 #import <arpa/inet.h>
 #include <os/log.h>
 #include <substrate.h>
-#include "libhooker.h"
+// #include "libhooker.h"
 
 #define ASSPort 44333
 
@@ -10,7 +10,7 @@ bool hasConnected;
 const int one = 1;
 int connfd;
 
-OSStatus (*_origAudioQueueStart)(AudioQueueRef inAQ, const AudioTimeStamp *inStartTime); 
+OSStatus (*_origAudioQueueStart)(AudioQueueRef inAQ, const AudioTimeStamp *inStartTime);
 OSStatus _functionAudioQueueStart(AudioQueueRef inAQ, const AudioTimeStamp *inStartTime) {
 
     os_log(OS_LOG_DEFAULT, "[ASSWatchdog] checking for ASS");
@@ -47,11 +47,11 @@ static __attribute__((constructor)) void Init() {
 
     hasConnected = false;
 
-    if (access("/usr/lib/libhooker.dylib", F_OK) == 0) {
-        const struct LHFunctionHook hook[1] = {{(void *)AudioQueueStart, (void **)&_functionAudioQueueStart, (void **)&_origAudioQueueStart}};
-        LHHookFunctions(hook, 1);
-    }
-    else {
+    // if (access("/usr/lib/libhooker.dylib", F_OK) == 0) {
+    //     const struct LHFunctionHook hook[1] = {{(void *)AudioQueueStart, (void **)&_functionAudioQueueStart, (void **)&_origAudioQueueStart}};
+    //     LHHookFunctions(hook, 1);
+    // }
+    // else {
         MSHookFunction((void *)AudioQueueStart, (void *)&_functionAudioQueueStart, (void **)&_origAudioQueueStart);
-    }
+    // }
 }

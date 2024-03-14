@@ -1,5 +1,5 @@
 #import "MSHFPrefsListController.h"
-
+#import <rootless.h>
 @implementation MSHFPrefsListController
 - (instancetype)init {
     self = [super init];
@@ -30,7 +30,7 @@
     NSString *directory = MSHFAppSpecifiersDirectory;
     NSArray *appPlists = [manager contentsOfDirectoryAtPath:directory error:nil];
     NSMutableArray *appSpecifiers = [NSMutableArray new];
-    
+
     for (NSString *filename in appPlists) {
         NSString *path = [directory stringByAppendingPathComponent:filename];
         NSDictionary *plist = [NSDictionary dictionaryWithContentsOfFile:path];
@@ -40,7 +40,7 @@
             NSString *title = plist[@"title"] ?: name;
             PSSpecifier *spec = [PSSpecifier preferenceSpecifierNamed:title target:nil set:nil get:nil detail:[MSHFAppPrefsListController class] cell:2 edit:nil];
             [spec setProperty:name forKey:@"MSHFApp"];
-            
+
             if (plist[@"important"]) {
                 [appSpecifiers insertObject:spec atIndex:0];
             } else {
@@ -80,43 +80,45 @@
 }
 
 - (void)viewWillAppear:(BOOL)animated {
-	[super viewWillAppear:animated];
+    [super viewWillAppear:animated];
 
     self.table.separatorColor = [UIColor colorWithWhite:0 alpha:0];
 
     if ([self.view respondsToSelector:@selector(setTintColor:)]) {
+        UIWindowScene *keyWindowScene = (UIWindowScene *)[[[UIApplication sharedApplication] connectedScenes] allObjects].firstObject;
+        UIWindow *keyWindow = keyWindowScene.windows.firstObject;
 
-        UIWindow *keyWindow = [[[UIApplication sharedApplication] windows] firstObject];
-        
         keyWindow.tintColor = [UIColor colorWithRed:238.0f / 255.0f
                                                 green:100.0f / 255.0f
                                                 blue:92.0f / 255.0f
-                                                alpha:1]; 
-	}
+                                                alpha:1];
+    }
 
     [UISwitch appearanceWhenContainedInInstancesOfClasses:@[self.class]].onTintColor = [UIColor colorWithRed:238.0f / 255.0f
-                                            green:100.0f / 255.0f
-                                            blue:92.0f / 255.0f
-                                            alpha:1]; 
+                                                                                                        green:100.0f / 255.0f
+                                                                                                         blue:92.0f / 255.0f
+                                                                                                        alpha:1];
 
-
-	if ([self respondsToSelector:@selector(setEdgesForExtendedLayout:)]) {
-		self.edgesForExtendedLayout = UIRectEdgeNone;
-	}
+    if ([self respondsToSelector:@selector(setEdgesForExtendedLayout:)]) {
+        self.edgesForExtendedLayout = UIRectEdgeNone;
+    }
 }
+
 
 - (void)viewDidDisappear:(BOOL)animated {
-	[super viewDidDisappear:animated];
+    [super viewDidDisappear:animated];
 
     if ([self.view respondsToSelector:@selector(setTintColor:)]) {
-        UIWindow *keyWindow = [[[UIApplication sharedApplication] windows] firstObject];
+        UIWindowScene *keyWindowScene = (UIWindowScene *)[[[UIApplication sharedApplication] connectedScenes] allObjects].firstObject;
+        UIWindow *keyWindow = keyWindowScene.windows.firstObject;
         keyWindow.tintColor = nil;
-	}
+    }
 }
 
-- (void)resetPrefs:(id)sender {	
 
-	NSString *plistPath = @"/User/Library/Preferences/com.ryannair05.mitsuhaforever.plist";
+- (void)resetPrefs:(id)sender {
+
+	NSString *plistPath = @"/var/mobile/Library/Preferences/com.ryannair05.mitsuhaforever.plist";
 
     if([[NSFileManager defaultManager] fileExistsAtPath:plistPath]){
         NSMutableDictionary *prefs = [[NSMutableDictionary alloc] initWithContentsOfFile:plistPath];
@@ -134,13 +136,13 @@
 - (void)respring:(id)sender {
 	pid_t pid;
     const char* args[] = {"killall", "backboardd", NULL};
-    posix_spawn(&pid, "/usr/bin/killall", NULL, NULL, (char* const*)args, NULL);
+    posix_spawn(&pid, "/var/jb/usr/bin/killall", NULL, NULL, (char* const*)args, NULL);
 }
 
 - (void)restartmsd:(id)sender {
 	pid_t pid;
     const char* args[] = {"killall", "mediaserverd", NULL};
-    posix_spawn(&pid, "/usr/bin/killall", NULL, NULL, (char* const*)args, NULL);
+    posix_spawn(&pid, "/var/jb/usr/bin/killall", NULL, NULL, (char* const*)args, NULL);
 }
 @end
 
@@ -190,7 +192,7 @@
 		self.selectionStyle = UITableViewCellSelectionStyleBlue;
 
 		//UIImageView *imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"safari" inBundle:globalBundle]];
-        UIImageView *imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:[NSString stringWithFormat:@"/Library/PreferenceBundles/MitsuhaForeverPrefs.bundle/safari.png"]]];
+        UIImageView *imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:[NSString stringWithFormat:@"/var/mobile/Library/PreferenceBundles/MitsuhaForeverPrefs.bundle/safari.png"]]];
 		    imageView.image = [imageView.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
 		if (@available(iOS 13.0, *)) {
 			imageView.tintColor = [UIColor systemGray3Color];
@@ -311,7 +313,7 @@
 
 	if (self) {
 		UIImageView *imageView = (UIImageView *)self.accessoryView;
-        imageView.image = [UIImage imageNamed:[NSString stringWithFormat:@"/Library/PreferenceBundles/MitsuhaForeverPrefs.bundle/twitter.png"]];
+        imageView.image = [UIImage imageNamed:[NSString stringWithFormat:@"/var/mobile/Library/PreferenceBundles/MitsuhaForeverPrefs.bundle/twitter.png"]];
 		imageView.image = [imageView.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
 		[imageView sizeToFit];
 
@@ -342,15 +344,15 @@
 	}
 
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            
+
             // NSString *size = [UIScreen mainScreen].scale > 2 ? @"original" : @"bigger";
             NSError __block *err = NULL;
             NSData __block *data;
             BOOL __block reqProcessed = false;
-            
+
             // NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"https://mobile.twitter.com/%@/profile_image?size=%@", _user, size]]];
 			NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"https://pbs.twimg.com/profile_images/1161080936836018176/4GUKuGlb_200x200.jpg"]]];
-            
+
             [[[NSURLSession sharedSession] dataTaskWithRequest:request completionHandler:^(NSData  *_data, NSURLResponse *_response, NSError *_error) {
                 err = _error;
                 data = _data;
@@ -365,7 +367,7 @@
                 return;
 
             UIImage *image = [UIImage imageWithData:data];
-                
+
             dispatch_async(dispatch_get_main_queue(), ^{
                     self.avatarImage = image;
             });

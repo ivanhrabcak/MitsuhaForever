@@ -42,6 +42,11 @@
 @property(retain, nonatomic) MSHFView *mshfView;
 @end
 
+@interface MRUNowPlayingView : UIView
+// @property (nonatomic, retain) MRUNowPlayingControlsView *controlsView;
+@end
+
+
 @interface MediaControlsPanelViewController : UIViewController
 @property(retain, nonatomic) MSHFView *mshfView;
 @end

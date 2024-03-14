@@ -3,7 +3,7 @@ name: Mitsuha Forever
 icmd: killall -9 SpringBoard
 
 all:
-  targetvers: 11.0
+  targetvers: 16.1
   archs:
     - arm64
     - arm64e
@@ -14,22 +14,29 @@ ASSWatchdog:
     type: tweak
     c_files:
         - "Tweak.c"
-MitsuhaForeverHomeScreen:
-    dir: Homescreen
+MitsuhaForeverSpringboard:
+    dir: Springboard
     type: tweak
     logos_files:
         - "HomescreenTweak.xm"
-    libs:
-        - MitsuhaForever
-    frameworks:
-        - MediaRemote
-MitsuhaForeverMusic:
-    dir: Music
-    type: tweak
-    logos_files:
-        - "MusicTweak.xm"
-    libs:
-        - MitsuhaForever
+        - "SBTweak.xm"
+        - "ControlCenterTweak.xm"
+# MitsuhaForeverHomeScreen:
+#     dir: Homescreen
+#     type: tweak
+#     logos_files:
+#         - "HomescreenTweak.xm"
+#     libs:
+#         - MitsuhaForever
+#     frameworks:
+#         - MediaRemote
+# MitsuhaForeverMusic:
+#     dir: Music
+#     type: tweak
+#     logos_files:
+#         - "MusicTweak.xm"
+#     libs:
+#         - MitsuhaForever
 MitsuhaForeverSpotify:
     dir: Spotify
     type: tweak
@@ -37,24 +44,24 @@ MitsuhaForeverSpotify:
         - "SpotifyTweak.xm"
     libs:
         - MitsuhaForever
-MitsuhaForeverSpringboardLS:
-    dir: SpringboardLS
-    type: tweak
-    logos_files:
-        - "SBTweak.xm"
-    libs:
-        - MitsuhaForever
-    frameworks:
-        - MediaRemote
-MitsuhaForeverSpringboardLSBackground:
-    dir: SpringboardLSBackground
-    type: tweak
-    logos_files:
-        - "SBLSTweak.xm"
-    libs:
-        - MitsuhaForever
-    frameworks:
-        - MediaRemote
+# MitsuhaForeverSpringboardLS:
+#     dir: SpringboardLS
+#     type: tweak
+#     logos_files:
+#         - "SBTweak.xm"
+#     libs:
+#         - MitsuhaForever
+#     frameworks:
+#         - MediaRemote
+# MitsuhaForeverSpringboardLSBackground:
+#     dir: SpringboardLSBackground
+#     type: tweak
+#     logos_files:
+#         - "SBLSTweak.xm"
+#     libs:
+#         - MitsuhaForever
+#     frameworks:
+#         - MediaRemote
 
 MitsuhaForeverPrefs:
     dir: Prefs

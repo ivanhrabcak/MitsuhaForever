@@ -14,23 +14,9 @@
 			<key>defaults</key>
 			<string>com.ryannair05.mitsuhaforever</string>
 			<key>label</key>
-			<string>Ignore ColorFlow</string>
+			<string>YTMusic Enabled</string>
 			<key>key</key>
-			<string>MSHFSpotifyIgnoreColorFlow</string>
-			<key>alternateColors</key>
-			<true/>
-		</dict>
-		<dict>
-			<key>cell</key>
-			<string>PSSwitchCell</string>
-			<key>default</key>
-			<true/>
-			<key>defaults</key>
-			<string>com.ryannair05.mitsuhaforever</string>
-			<key>label</key>
-			<string>Cover art bug fix</string>
-			<key>key</key>
-			<string>MSHFSpotifyEnableCoverArtBugFix</string>
+			<string>MSHFYTMusicEnabled</string>
 			<key>alternateColors</key>
 			<true/>
 		</dict>

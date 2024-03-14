@@ -1,0 +1,55 @@
+name: CI
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: macos-latest
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: true
+
+      - name: Check cache
+        run: |
+          echo upstream_heads=`git ls-remote https://github.com/theos/theos | head -n 1 | cut -f 1`-`git ls-remote https://github.com/theos/sdks | head -n 1 | cut -f 1` >> $GITHUB_ENV
+
+      - name: Use cache
+        id: cache
+        uses: actions/cache@v3
+        with:
+          path: ${{ github.workspace }}/theos
+          key: ${{ runner.os }}-${{ env.upstream_heads }}
+            
+      - name: Prepare Theos
+        # Don't use @main in production, this repo is specifically for testing it.
+        uses: Randomblock1/theos-action@v1
+        with:
+          theos-sdks: https://github.com/xybp888/iOS-SDKs
+          orion: true
+
+      - name: Build libmitsuhaforever
+        run: |
+          cd libmitsuhaforever
+          THEOS_PACKAGE_SCHEME=rootless make clean package
+          cp .theos/obj/arm64e/libmitsuhaforever.dylib $THEOS/vendor/lib/iphone/rootless/libmitsuhaforever.dylib
+          cp -r .theos/_/var/jb/usr/include/MitsuhaForever/ $THEOS/include/
+          ls $THEOS/include/*
+
+      - name: Build package
+        run: |
+          rm -f packages/*
+          make clean package
+
+      - name: Upload the MitsuhaForever package
+        uses: actions/upload-artifact@v3
+        with:
+          name: "MitsuhaForever.zip"
+          path: ${{ github.workspace }}/packages/*.deb
+      
+      - name: Upload the libmitsuhaforever package
+        uses: actions/upload-artifact@v3
+        with:
+          name: "libmitsuhaforever.zip"
+          path: ${{ github.workspace }}/libmitsuhaforever/packages/*.deb

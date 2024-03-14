@@ -1,30 +1,18 @@
 # Mitsuha Forever
 
-This is a fork of a Nepeta's excellent tweak - [MitsuhaInfinity](https://github.com/Nepeta/MitsuhaInfinity) with support for iOS 13, bug fixes and new features
+This is a fork of a Nepeta's and ryannair05 tweak - [MitsuhaForever](https://github.com/ryannair05/MitsuhaForever) with support for iOS 15-16 Rootless, spotify wavehigh fixed and more to come.
 
-For support / to report a bug [join my discord server](https://discord.gg/J2Tmaqy)
+## Screenshots
+<img src="Preview.PNG" alt="Preview" />
 
 ## Installation
 
-1. Add this repository to your package manager: https://repo.chariz.com
+1. Add this repository to your package manager: https://zsaaiq.github.io/jailbreakrepo/
 2. Install **Mitsuha Forever**.
 
-## Compatibility
-
 ### Supported apps
-
-* Apple Music
 * Spotify
-* iOS audio player notification (global)
-
-### Tweaks
-
-Should be compatible with Eclipse and similar tweaks.
-Works with Artsy.
-
-## Bugs
-
-For support / to report a bug you may open an issue here on Github
+* SpringBoard, Lockscreen, CC Music Player
 
 ## Donations
 
